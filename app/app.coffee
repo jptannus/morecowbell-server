@@ -1,25 +1,23 @@
 Hapi = require "hapi"
 Q = require "q"
+logger = new (require "./logger") "App"
+Config = require "./config.json"
 
-Server = new (require "./server")
-  host: "localhost"
-  port: 8000
+# Create server
+Server = new (require "./server") Config.server
 
 # MongoDB
 Server.registerPlugin
-  register: require("hapi-mongodb")
-  options:
-    "url": "mongodb://localhost:27017/morecowbell"
-    "settings":
-      "db":
-        "native_parser": false
+  register: require "hapi-mongodb"
+  options: Config.mongodb
 
-###
-  Routes registry
-###
+# Good
+Server.registerPlugin
+  register: require "good"
+  options: Config.good
+
+# Routes registry
 Server.registerRoute require "./entries/entries-endpoint.coffee"
 
-###
-  Server start
-###
+# Server start
 Server.start()

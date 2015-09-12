@@ -1,0 +1,25 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 8000
+  },
+  "mongodb": {
+    "url": "mongodb://localhost:27017/morecowbell",
+    "settings": {
+      "db": {
+        "native_parser": false
+      }
+    }
+  },
+  "good": {
+    "opsInterval": 30000,
+    "reporters": [{
+      "reporter": "good-console",
+      "events": {
+        "log": "*",
+        "response": "*",
+        "ops": "*"
+      }
+    }]
+  }
+}

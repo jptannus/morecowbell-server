@@ -1,5 +1,6 @@
 Hapi = require 'hapi'
 Q = require 'q'
+logger = new (require "./logger") "Server"
 
 class Server
   constructor: (@config_)->
@@ -16,7 +17,7 @@ class Server
     @pluginPromises_.push deferred.promise
     @server_.register options, (err) ->
       if err
-        console.error err
+        logger.error err
         return deferred.reject err
       deferred.resolve()
     return deferred.promise
@@ -29,8 +30,8 @@ class Server
       Q.all(@pluginPromises_)
       .then =>
         @server_.start () =>
-          console.log 'Server running at:', @server_.info.uri
+          logger.debug 'Server running at:', @server_.info.uri
       .catch (err) ->
-        console.error "Could not start server: ", err
+        logger.error "Could not start server: ", err
 
 module.exports = Server

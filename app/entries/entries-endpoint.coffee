@@ -1,16 +1,45 @@
 Boom = require "boom"
+Joi = require "joi"
+Endpoint = require "../endpoint"
+logger = new (require "../logger") "EntriesEndpoint"
 
-getEntries = (request, reply) ->
-  db = request.server.plugins['hapi-mongodb'].db
-  ObjectID = request.server.plugins['hapi-mongodb'].ObjectID
+class EntriesEndpoint extends Endpoint
+  getEntries: (request, reply, db)=>
+    logger.debug "getEntries"
+    db.entries().find().toArray @responseCallback(request, reply)
 
-  db.collection('entries').find().toArray (err, result)->
-    if err
-      console.log "Mongo error", err
-      return reply(Boom.internal('Internal MongoDB error', err))
-    reply(result)
+  createEntry: (request, reply, db)=>
+    logger.debug "createEntry"
+    db.entries().insert
+      title: request.payload.title
+      source: request.payload.source
+    , @responseCallback(request, reply)
 
-module.exports =
-  method: "GET",
-  path:"/entries",
-  handler: getEntries
+  deleteEntry: (request, reply, db)=>
+    logger.debug "deleteEntry"
+    db.entries().remove { "_id" : db.newId(request.params.entryId) },
+      @responseCallback(request, reply)
+
+  getRoutes: ()->
+    return [
+      method: "GET",
+      path:"/entries",
+      handler: @getHandler @getEntries
+    ,
+      method: "POST",
+      path:"/entries",
+      handler: @getHandler @createEntry
+      config:
+        validate:
+          payload: require "./entry-model"
+    ,
+      method: "DELETE",
+      path:"/entries/{entryId}",
+      handler: @getHandler @deleteEntry
+      config:
+        validate:
+          params:
+            entryId: Joi.string().required()
+    ]
+
+module.exports = (new EntriesEndpoint()).getRoutes()
