@@ -1,0 +1,30 @@
+{
+  "name": "morecowbell-server",
+  "version": "0.1.0",
+  "description": "This is the server structure for the mobile app More Cowbell.",
+  "main": "app/app.coffee",
+  "scripts": {
+    "start": "coffee app/app.coffee",
+    "test": "app-test.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jptannus/morecowbell-server.git"
+  },
+  "keywords": [
+    "more",
+    "cowbell"
+  ],
+  "author": "Gaviota",
+  "license": "MIT License",
+  "bugs": {
+    "url": "https://github.com/jptannus/morecowbell-server/issues"
+  },
+  "dependencies": {
+    "boom": "^2.8.0",
+    "coffee-script": "1.10.0",
+    "hapi": "10.0.0",
+    "hapi-mongodb": "^3.0.0",
+    "q": "^1.4.1"
+  }
+}
